@@ -21,8 +21,6 @@ export const userReducer = createReducer(defaultUser,{
 
 export const statsReducer = createReducer(defaultStats, {
     [changeStats]:(stats, action) =>{
-        console.log(stats);
-        console.log(stats[action.payload]);
         const res = stats[action.payload.statsType] + action.payload.sum;
         stats = { ...stats, [action.payload.statsType]: res < 0 ? 0 : res }
         return { ...stats };
