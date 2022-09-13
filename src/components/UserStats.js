@@ -1,40 +1,37 @@
-import React, { useState } from 'react'
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Avatar from './Avatar'
-import { addFollower, delFollower, addFollowing, delFollowing } from '../actions/twitterActions';
+import { changeStats } from '../actions/statsActions';
+import Avatar from './Avatar';
 
 const UserStats = () => {
-  const [sum] = useState(1);
-  const dispatch = useDispatch();
-  const followers = useSelector(state => state.followers)
-  const following = useSelector(state => state.following)
-  const name = useSelector(state => state.name);
+    const { user, stats } = useSelector(state => state);
+    const dispatch = useDispatch();
+    //const changeStats = (key, value) => dispatch(changeStatsAction(key, value));
 
-  return (
-        <div className='user-stats'>
-          <div>
-            <Avatar/>
-            {name}
-          </div>
-          <div className='stats'>
-            <button 
-            onClick={()=> dispatch(addFollower(sum))}
-            onContextMenu={(e)=>
-            {e.preventDefault();
-            dispatch(delFollower(sum));
-            }}>Followers: {followers}</button>
-     
-            <button 
-            onClick={()=> dispatch(addFollowing(sum))}
-            onContextMenu={(e)=>{
-              e.preventDefault();
-              dispatch(delFollowing(sum));
-            }}>Following: {following}</button>
-          </div>
+    return (
+        <div className="user-stats">
+            <div>
+                <Avatar />
+                {user.name}
+            </div>
+            <div className="stats">
+                <div
+                    onClick={() => dispatch(changeStats('followers', 1))}
+                    onContextMenu={e => {
+                        e.preventDefault();
+                        dispatch(changeStats('followers', -1));
+                    }}
+                >Followers: {stats.followers}</div>
+                <div
+                    onClick={() => dispatch(changeStats('following', 1))}
+                    onContextMenu={e => {
+                        e.preventDefault();
+                        dispatch(changeStats('following', -1));
+                    }}
+                >Following: {stats.following}</div>
+            </div>
         </div>
-
-
-  )
+    );
 }
 
-export default UserStats
+export default UserStats;

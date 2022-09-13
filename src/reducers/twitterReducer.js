@@ -1,27 +1,32 @@
-import { ADDFOLLOWER, DELFOLLOWER, CHANGEAVATAR, ADDFOLLOWING, DELFOLLOWING, CHANGENAME } from "../actions/twitterActions";
-export const twitterReducer = (state, action) => {
-    switch (action.type) {
-        case CHANGEAVATAR:
-            return { ...state, avatar: state.avatar = action.payload || state.avatar };
-
-        case CHANGENAME:
-            return { ...state, name: state.name = action.payload  };
-
-        /* FOLLOWERS*/
-        case ADDFOLLOWER:
-            return { ...state, followers: state.followers + action.payload };
-        case DELFOLLOWER:
-            const res = state.followers - action.payload;
-            return { ...state, followers: res < 0 ? state.followers : res };
-
-        /* FOLLOWING*/
-        case ADDFOLLOWING:
-            return { ...state, following: state.following + action.payload };
-        case DELFOLLOWING:
-            const res2 = state.following - action.payload;
-            return { ...state, following: res2 < 0 ? state.following : res2 }; 
-
-        default:
-            return state;
-    }
+import {createReducer} from "@reduxjs/toolkit";
+import { changeStats } from "../actions/statsActions";
+import { changeAvatar, changeName } from "../actions/userActions";
+const defaultUser = {
+    avatar: 'https://www.gravatar.com/avatar/0?d=monsterid',
+    name: 'Monster'
 }
+const defaultStats = {
+        followers: 0,
+        following: 0
+}
+
+export const userReducer = createReducer(defaultUser,{
+    [changeAvatar]:(user,action) =>{
+        user.avatar = action.payload;
+    },
+    [changeName]:(user,action) =>{
+        user.name = action.payload;
+    },
+})
+
+export const statsReducer = createReducer(defaultStats, {
+    [changeStats]:(stats, action) =>{
+        console.log(stats);
+        console.log(stats[action.payload]);
+        const res = stats[action.payload.statsType] + action.payload.sum;
+        stats = { ...stats, [action.payload.statsType]: res < 0 ? 0 : res }
+        return { ...stats };
+
+    }
+})
+
